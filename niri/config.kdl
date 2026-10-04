@@ -19,8 +19,8 @@ input {
             // If this section is empty, niri will fetch xkb settings
             // from org.freedesktop.locale1. You can control these using
             // localectl set-x11-keymap.
-            layout "us"
-            options "ctrl:nocaps" // Caps Lock is another Control
+            // Left empty on purpose: layout and options (Caps->Ctrl, Alt<->Super) are set system-wide
+            // in configuration.nix (services.xserver.xkb) and reach niri through locale1.
         }
 
         // Enable numlock on startup, omitting this setting disables it.
@@ -113,7 +113,10 @@ input {
 // https://niri-wm.github.io/niri/Configuration:-Layout
 layout {
     // Set gaps around windows in logical pixels.
-    gaps 16
+    gaps 20
+
+    // Gruvbox dark, neutral (muted) accents: bg0 #282828, bg2 #504945, yellow #d79921, orange #d65d0e, red #cc241d.
+    background-color "#3c3836" // bg1: a step lighter than ghostty's #282828 so windows stand out
 
     // When to center a column when changing focus, options are:
     // - "never", default behavior, focusing an off-screen column will keep at the left
@@ -161,7 +164,7 @@ layout {
         // off
 
         // How many logical pixels the ring extends out from the windows.
-        width 4
+        width 2
 
         // Colors can be set in a variety of ways:
         // - CSS named colors: "red"
@@ -169,13 +172,13 @@ layout {
         // - CSS-like notation: "rgb(255, 127, 0)", rgba(), hsl() and a few others.
 
         // Color of the ring on the active monitor.
-        active-color "#7fc8ff"
+        active-color "#d65d0e"
 
         // Color of the ring on inactive monitors.
         //
         // The focus ring only draws around the active window, so the only place
         // where you can see its inactive-color is on other monitors.
-        inactive-color "#505050"
+        inactive-color "#504945"
 
         // You can also use gradients. They take precedence over solid colors.
         // Gradients are rendered the same as CSS linear-gradient(angle, from, to).
@@ -200,11 +203,11 @@ layout {
         off
 
         width 4
-        active-color "#ffc87f"
-        inactive-color "#505050"
+        active-color "#d79921"
+        inactive-color "#504945"
 
         // Color of the border around windows that request your attention.
-        urgent-color "#9b0000"
+        urgent-color "#cc241d"
 
         // Gradients can use a few different interpolation color spaces.
         // For example, this is a pastel rainbow gradient via in="oklch longer hue".
@@ -270,6 +273,10 @@ layout {
 // See the binds section below for more spawn examples.
 
 // This line starts waybar, a commonly used bar for Wayland compositors.
+overview {
+    backdrop-color "#1d2021" // gruvbox bg0_h
+}
+
 spawn-at-startup "waybar"
 spawn-at-startup "1password" "--silent" // starts in the tray so its SSH agent is always up
 
@@ -342,9 +349,8 @@ window-rule {
     // block-out-from "screencast"
 }
 
-// Example: enable rounded corners for all windows.
-// (This example rule is commented out with a "/-" in front.)
-/-window-rule {
+// Rounded corners for all windows, so the focus ring/border/shadow follow them.
+window-rule {
     geometry-corner-radius 12
     clip-to-geometry true
 }

@@ -1,0 +1,48 @@
+// Waybar layout for niri (the packaged default targets sway). Styling lives in style.css.
+{
+    "layer": "top",
+    "position": "top",
+    "height": 30,
+    "spacing": 4,
+    "reload_style_on_change": true, // style.css edits apply without restarting waybar
+
+    "modules-left": ["niri/workspaces"],
+    "modules-center": ["niri/window"],
+    "modules-right": ["wireplumber", "network", "cpu", "memory", "temperature", "clock", "tray"],
+
+    "niri/workspaces": {
+        "format": "{index}"
+    },
+    "niri/window": {
+        "max-length": 80,
+        "separate-outputs": true // each monitor's bar shows its own focused window
+    },
+    "wireplumber": {
+        "format": "vol {volume}%",
+        "format-muted": "muted",
+        "on-click": "ghostty -e wiremix"
+    },
+    "network": {
+        "format-wifi": "{essid} {signalStrength}%",
+        "format-ethernet": "eth",
+        "format-disconnected": "offline",
+        "tooltip-format": "{ifname} {ipaddr}/{cidr}"
+    },
+    "cpu": {
+        "format": "cpu {usage}%"
+    },
+    "memory": {
+        "format": "mem {percentage}%"
+    },
+    "temperature": {
+        "format": "{temperatureC}°C",
+        "critical-threshold": 85
+    },
+    "clock": {
+        "format": "{:%a %d %b  %H:%M}",
+        "tooltip-format": "<tt>{calendar}</tt>"
+    },
+    "tray": {
+        "spacing": 8
+    }
+}

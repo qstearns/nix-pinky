@@ -52,6 +52,15 @@
   };
   security.pam.services.swaylock = { }; # without this swaylock can lock but never unlock
 
+  # Keyboard, system-wide: niri reads this via locale1 (its own xkb section is empty), and so do the
+  # TTYs/tuigreet via useXkbConfig. Caps Lock is another Control; Alt and Super trade places, so the
+  # key next to the spacebar is niri's Mod.
+  services.xserver.xkb = {
+    layout = "us";
+    options = "ctrl:nocaps,altwin:swap_alt_win";
+  };
+  console.useXkbConfig = true;
+
   # --- Audio ---
   security.rtkit.enable = true;
   services.pipewire = {

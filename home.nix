@@ -18,6 +18,9 @@
   # Symlink straight to the repo (not a store copy) so edits apply live; niri reloads on save
   xdg.configFile."niri/config.kdl".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/nix-pinky/niri/config.kdl";
+  # Same trick for waybar (style.css reloads itself; config.jsonc edits need a waybar restart)
+  xdg.configFile."waybar".source =
+    config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/nix-pinky/waybar";
 
   # Built into the store and checked by ghostty at build time; applies on rebuild (then ctrl+shift+, to reload)
   programs.ghostty = {
@@ -25,6 +28,9 @@
     settings = {
       font-family = "Dank Mono"; # from fonts.packages in configuration.nix
       font-size = 13;
+      theme = "Gruvbox Material Dark"; # muted gruvbox, to match niri and waybar
+      window-padding-x = 10; # space between the text and the window edge (default 2)
+      window-padding-y = 8;
     };
   };
 
