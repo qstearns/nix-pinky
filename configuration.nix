@@ -35,6 +35,10 @@
     # SSH public keys go here once you have them, e.g.:
     # openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAA... you@laptop" ];
   };
+  # sudo remembers your password for 30 min (default 5), still per terminal
+  security.sudo.extraConfig = ''
+    Defaults timestamp_timeout=30
+  '';
 
   # --- Desktop: niri (scrollable-tiling Wayland) ---
   # The module also sets up the gnome portal (screen sharing) and gnome-keyring.
@@ -99,7 +103,11 @@
     xwayland-satellite # niri runs X11 apps through this when it's on PATH
     playerctl          # media keys
   ];
-  fonts.packages = with pkgs; [ noto-fonts noto-fonts-color-emoji ];
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-color-emoji
+    (callPackage ./pkgs/dank-mono.nix { }) # licensed; see that file for first-time setup
+  ];
 
   # --- Nix itself ---
   nix.settings.experimental-features = [ "nix-command" "flakes" ];

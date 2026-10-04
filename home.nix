@@ -13,10 +13,20 @@
   programs.nix-index.enable = true; # nix-locate: find which package has a missing .so
   programs.nix-index-database.comma.enable = true; # `, cowsay hi` runs a program without installing it
   programs.bat.enable = true; # syntax-highlighting cat (the command is `bat`; Debian calls it `batcat`)
+  programs.starship.enable = true; # prompt; hooks itself into zsh. Customize via programs.starship.settings
 
   # Symlink straight to the repo (not a store copy) so edits apply live; niri reloads on save
   xdg.configFile."niri/config.kdl".source =
     config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/src/nix-pinky/niri/config.kdl";
+
+  # Built into the store and checked by ghostty at build time; applies on rebuild (then ctrl+shift+, to reload)
+  programs.ghostty = {
+    enable = true;
+    settings = {
+      font-family = "Dank Mono"; # from fonts.packages in configuration.nix
+      font-size = 13;
+    };
+  };
 
   # SSH keys live in 1Password; its agent serves them (enable it in the app:
   # Settings -> Developer -> "Use the SSH agent"). gcr's agent is off in configuration.nix.
