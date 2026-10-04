@@ -36,16 +36,17 @@
     # openssh.authorizedKeys.keys = [ "ssh-ed25519 AAAA... you@laptop" ];
   };
 
-  # --- Desktop: Sway (Wayland) ---
-  programs.sway = {
+  # --- Desktop: niri (scrollable-tiling Wayland) ---
+  # The module also sets up the gnome portal (screen sharing) and gnome-keyring.
+  programs.niri.enable = true;
+  # Login screen on tty1 (greetd + tuigreet) that starts niri. SSH logins don't go through it.
+  services.greetd = {
     enable = true;
-    wrapperFeatures.gtk = true;
+    useTextGreeter = true; # keep boot messages from scribbling over the TUI
+    settings.default_session.command =
+      "${pkgs.tuigreet}/bin/tuigreet --time --remember --cmd niri-session";
   };
-  # Log in on the text screen (tty1) and Sway starts automatically
-  environment.loginShellInit = ''
-    if [ "$(tty)" = "/dev/tty1" ]; then exec sway; fi
-  '';
-  xdg.portal.wlr.enable = true; # screen sharing in browsers etc.
+  security.pam.services.swaylock = { }; # without this swaylock can lock but never unlock
 
   # --- Audio ---
   security.rtkit.enable = true;
@@ -73,11 +74,28 @@
   programs.command-not-found.enable = false; # doesn't work with flakes; nix-index (home.nix) replaces it
 
   # --- Software ---
+  nixpkgs.config.allowUnfree = true; # 1Password, Spotify, Claude Code are all closed-source
   programs.firefox.enable = true;
+
+  # 1Password: use these modules, not a plain package, so system auth (polkit)
+  # and the CLI <-> app integration work
+  programs._1password.enable = true; # `op` CLI
+  programs._1password-gui = {
+    enable = true;
+    polkitPolicyOwners = [ "quinn" ]; # lets the app unlock with your system password
+  };
   environment.systemPackages = with pkgs; [
     git
     ripgrep
     fd
+
+    # what niri/config.kdl launches
+    ghostty            # Mod+T  terminal
+    fuzzel             # Mod+D  app launcher
+    swaylock           # Super+Alt+L  lock screen
+    waybar             # status bar, spawned at startup
+    xwayland-satellite # niri runs X11 apps through this when it's on PATH
+    playerctl          # media keys
   ];
   fonts.packages = with pkgs; [ noto-fonts noto-fonts-color-emoji ];
 
