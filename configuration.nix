@@ -84,6 +84,8 @@
     enable = true;
     polkitPolicyOwners = [ "quinn" ]; # lets the app unlock with your system password
   };
+  # 1Password is the SSH agent (see home.nix); turn off the one gnome-keyring brings with niri
+  services.gnome.gcr-ssh-agent.enable = false;
   environment.systemPackages = with pkgs; [
     git
     ripgrep
